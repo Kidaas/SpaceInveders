@@ -169,10 +169,13 @@ void main(void) { // carré rouge
 precision highp float; // precision des nombres flottant
 
 varying vec2 vTextureCoord; // recuperation de la coord rasterisee
+uniform sampler2D uMaTexture; // la texture du vaisseau en entree
 
 void main(void) {
     // couleur par defaut du vaisseau... a changer
     gl_FragColor = vec4(1.0,1.0,0.0,1.0);
+     // la couleur est attribuee au fragment courant
+    //gl_FragColor = texture2D(uMaTexture,vTextureCoord);
 
 }
 </script>
@@ -290,7 +293,7 @@ void main(void) {
 
         // active le teste de profondeur
         gl.enable(gl.DEPTH_TEST);
-        gl.blendFunc(gl.ONE, ql.ONE_MINUS_SRC_ALPHA);
+        //gl.blendFunc(gl.ONE, ql.ONE_MINUS_SRC_ALPHA);
 
         /* Mouse and keyboard interaction functions */
         //canvas.addEventListener('mousedown', tbMouseDown, true);
@@ -303,6 +306,44 @@ void main(void) {
         // dessine la scene
         tick();
     }
+
+/****************************************************************************************
+ *   texture du vaisseau
+ ***************************************************************************************/
+    var maTextureVaisseau;
+
+    function initTexture() {
+        // creation de la texture
+        maTextureVaisseau = gl.createTexture();
+        maTextureVaisseau.image = new Image();
+        maTextureVaisseau.image.onload = function () {
+            handleLoadedTexture(maTextureVaisseau)
+        }
+
+        maTextureVaisseau.image.src = "vaisseau.jpg";
+    }
+
+    function handleLoadedTexture(texture) {
+            // active la texture (les operations qui suivent feront effet sur celle-ci)
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
+            // envoie les donnees sur GPU
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+
+            // options (filtrage+effets de bordure)
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+            // desactive la texture courante
+            gl.bindTexture(gl.TEXTURE_2D, null);
+        }
+
+/****************************************************************************************
+ *   Fin texture du vaisseau
+ ***************************************************************************************/
 
 </script>
 
