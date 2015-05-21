@@ -307,43 +307,6 @@ void main(void) {
         tick();
     }
 
-/****************************************************************************************
- *   texture du vaisseau
- ***************************************************************************************/
-    var maTextureVaisseau;
-
-    function initTexture() {
-        // creation de la texture
-        maTextureVaisseau = gl.createTexture();
-        maTextureVaisseau.image = new Image();
-        maTextureVaisseau.image.onload = function () {
-            handleLoadedTexture(maTextureVaisseau)
-        }
-
-        maTextureVaisseau.image.src = "vaisseau.jpg";
-    }
-
-    function handleLoadedTexture(texture) {
-            // active la texture (les operations qui suivent feront effet sur celle-ci)
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-
-            // envoie les donnees sur GPU
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
-
-            // options (filtrage+effets de bordure)
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-            // desactive la texture courante
-            gl.bindTexture(gl.TEXTURE_2D, null);
-        }
-
-/****************************************************************************************
- *   Fin texture du vaisseau
- ***************************************************************************************/
 
 </script>
 
