@@ -11,6 +11,11 @@
 <script type="text/javascript" src="spaceship.js"></script>
 
 <script id="heightfield-vs" type="x-shader/x-vertex">
+// DANS draw scene
+// gl.enabled(gl.BLEND);
+// ...
+// gl.disable(..);
+//
     // *** le vertex shader ***
     attribute vec3 aVertexPosition; // la position du sommet
     attribute vec2 aVertexCoord; // sa coordonnee de texture
@@ -167,7 +172,7 @@ varying vec2 vTextureCoord; // recuperation de la coord rasterisee
 
 void main(void) {
     // couleur par defaut du vaisseau... a changer
-    gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+    gl_FragColor = vec4(1.0,1.0,0.0,1.0);
 
 }
 </script>
@@ -285,6 +290,7 @@ void main(void) {
 
         // active le teste de profondeur
         gl.enable(gl.DEPTH_TEST);
+        gl.blendFunc(gl.ONE, ql.ONE_MINUS_SRC_ALPHA);
 
         /* Mouse and keyboard interaction functions */
         //canvas.addEventListener('mousedown', tbMouseDown, true);
@@ -297,7 +303,6 @@ void main(void) {
         // dessine la scene
         tick();
     }
-
 
 </script>
 
