@@ -202,6 +202,37 @@ void main(void) {
 }
 </script>
 
+<script id="spaceship-vs" type="x-shader/x-vertex">
+    // *** le vertex shader ***
+    attribute vec3 aVertexPosition; // la position du sommet
+    attribute vec2 aVertexCoord; // sa coordonnee de texture
+
+    uniform vec2 uPosition; // position du vaisseau
+    varying vec2 vTextureCoord; // on souhaite rasteriser la coordonnee
+
+    void main(void) {
+        // projection de la position
+        gl_Position = vec4(aVertexPosition+vec3(uPosition,0.0), 1.0);
+
+        // stockage de la coordonnee de texture
+        vTextureCoord = aVertexCoord;
+    }
+</script>
+<script id="spaceship-fs" type="x-shader/x-fragment"> // met du rouge dans le carré
+// *** le fragment shader ***
+precision highp float; // precision des nombres flottant
+
+varying vec2 vTextureCoord; // recuperation de la coord rasterisee
+uniform sampler2D uMaTexture; // la texture du vaisseau en entree
+
+void main(void) {
+    // couleur par defaut du vaisseau... a changer
+    //gl_FragColor = vec4(1.0,1.0,0.0,1.0);
+     // la couleur est attribuee au fragment courant
+    gl_FragColor = texture2D(uMaTexture,vTextureCoord);
+}
+</script>
+
 <script id="shoot-vs" type="x-shader/x-vertex">
     // *** le vertex shader ***
     attribute vec3 aVertexPosition; // la position du sommet
