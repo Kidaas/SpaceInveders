@@ -175,10 +175,9 @@ uniform sampler2D uMaTexture; // la texture du vaisseau en entree
 
 void main(void) {
     // couleur par defaut du vaisseau... a changer
-    gl_FragColor = vec4(1.0,1.0,0.0,1.0);
+    //gl_FragColor = vec4(1.0,1.0,0.0,1.0);
      // la couleur est attribuee au fragment courant
-    //gl_FragColor = texture2D(uMaTexture,vTextureCoord);
-
+    gl_FragColor = texture2D(uMaTexture,vTextureCoord);
 }
 </script>
 
@@ -244,10 +243,14 @@ void main(void) {
         background.sendUniformVariables();
         background.draw();
 
+        gl.enable(gl.BLEND); //Activation de gl.Blend
+
         // dessin du vaisseau (shader par defaut ici)
         gl.useProgram(spaceship.shader());
         spaceship.sendUniformVariables();
         spaceship.draw();
+
+        gl.disable(gl.BLEND);
 
         // dessin du shoot
         gl.useProgram(shootShader);
@@ -328,7 +331,7 @@ void main(void) {
         // init de tous les shaders
         initHeightfieldShader();
         initBackgroundShader();
-        initSpaceshipShader();        
+        initSpaceshipShader();
         initShootShader();
 
         // init de tous les objets
@@ -341,7 +344,7 @@ void main(void) {
 
         // active le teste de profondeur
         gl.enable(gl.DEPTH_TEST);
-        //gl.blendFunc(gl.ONE, ql.ONE_MINUS_SRC_ALPHA);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); //Active la transparance
 
         /* Mouse and keyboard interaction functions */
         //canvas.addEventListener('mousedown', tbMouseDown, true);
