@@ -1,5 +1,5 @@
 <html><head>
-<title>Space Inveders</title>
+<title>SpaceShip</title>
 <meta http-equiv="content-type" content="text/html; charset=windows-1252">
 
 <script type="text/javascript" src="gl-matrix.js"></script>
@@ -9,7 +9,8 @@
 <script type="text/javascript" src="heightfield.js"></script>
 <script type="text/javascript" src="background.js"></script>
 <script type="text/javascript" src="spaceship.js"></script>
-<script type="text/javascript" src="enemy1.js"></script>
+<script type="text/javascript" src="shoot.js"></script>
+
 
 <script id="heightfield-vs" type="x-shader/x-vertex">
 // DANS draw scene
@@ -140,7 +141,7 @@ vec3 computeNormal() { // calcule la normale
     return cross(v1,v2);
 }
 
-void main(void) {
+void main(void) { // carré rouge
     float d = texture2D(uHeightfield,vTextureCoord).x;
     vec3 n = computeNormal();
     vec3 s = shade(n,d);
@@ -149,7 +150,6 @@ void main(void) {
 }
 </script>
 
-/** Vaisseau spacial **/
 <script id="spaceship-vs" type="x-shader/x-vertex">
     // *** le vertex shader ***
     attribute vec3 aVertexPosition; // la position du sommet
@@ -175,15 +175,13 @@ uniform sampler2D uMaTexture; // la texture du vaisseau en entree
 
 void main(void) {
     // couleur par defaut du vaisseau... a changer
-    gl_FragColor = vec4(1.0,1.0,0.0,1.0);
+    //gl_FragColor = vec4(1.0,1.0,0.0,1.0);
      // la couleur est attribuee au fragment courant
-    //gl_FragColor = texture2D(uMaTexture,vTextureCoord);
-
+    gl_FragColor = texture2D(uMaTexture,vTextureCoord);
 }
 </script>
 
-/** Vaisseau ennemi n°1 **/
-<script id="enemy1-vs" type="x-shader/x-vertex">
+<script id="shoot-vs" type="x-shader/x-vertex">
     // *** le vertex shader ***
     attribute vec3 aVertexPosition; // la position du sommet
     attribute vec2 aVertexCoord; // sa coordonnee de texture
@@ -199,18 +197,15 @@ void main(void) {
         vTextureCoord = aVertexCoord;
     }
 </script>
-<script id="enemy1-fs" type="x-shader/x-fragment"> // met du rouge dans le carré
+<script id="shoot-fs" type="x-shader/x-fragment"> // met du rouge dans le carré
 // *** le fragment shader ***
 precision highp float; // precision des nombres flottant
 
 varying vec2 vTextureCoord; // recuperation de la coord rasterisee
-uniform sampler2D uMaTexture; // la texture du vaisseau en entree
 
 void main(void) {
     // couleur par defaut du vaisseau... a changer
-    gl_FragColor = vec4(1.0,1.0,0.0,1.0);
-     // la couleur est attribuee au fragment courant
-    //gl_FragColor = texture2D(uMaTexture,vTextureCoord);
+    gl_FragColor = vec4(0.0,0.0,1.0,1.0);
 
 }
 </script>
@@ -221,7 +216,7 @@ void main(void) {
     var heightfield; // l'objet heightfield, sa géométrie, son shader
     var background; // l'objet background, sa géométrie, son shader
     var spaceship; // l'objet spaceship, sa géométrie, son shader
-    var enemy1; // l'objet enemy1, sa géométrie, son shader
+    var shoot = new Array(); //l'objet shoot dans un tableau, son shader
 
     function drawScene() {
         // initialisation du viewport
@@ -248,15 +243,21 @@ void main(void) {
         background.sendUniformVariables();
         background.draw();
 
+        gl.enable(gl.BLEND); //Activation de gl.Blend
+
         // dessin du vaisseau (shader par defaut ici)
         gl.useProgram(spaceship.shader());
-        gl.useProgram(enemy1.shader());
-
         spaceship.sendUniformVariables();
-        enemy1.sendUniformVariables();
-
         spaceship.draw();
-        enemy1.draw();
+
+        gl.disable(gl.BLEND);
+
+        // dessin du shoot
+        gl.useProgram(shootShader);
+        for (var i = 0; i < shoot.length; i++) {
+            shoot[i].sendUniformVariables();
+            shoot[i].draw();
+        };
     }
 
     // une bonne manière de gerer les evenements claviers
@@ -287,6 +288,15 @@ void main(void) {
         spaceship.setPosition(newx,newy);
     }
 
+    function mouseCLick(event) {
+        //alert("Bonjour");
+        var shootTemporaire = new Shoot();
+        shootTemporaire.setPosition(spaceship.getX(), spaceship.getY());
+        shoot.push(shootTemporaire);
+
+        drawScene();
+    }
+
     // animation (ex : explosion)
     var lastTime = 0;
     function animate() {
@@ -306,6 +316,10 @@ void main(void) {
         handleKeys();
         drawScene();
         animate();
+        for (var i = 0; i < shoot.length; i++) {
+            shoot[i].setPosition(shoot[i].getX(), shoot[i].getY()+0.075);
+        }
+
     }
 
 
@@ -323,24 +337,24 @@ void main(void) {
         initHeightfieldShader();
         initBackgroundShader();
         initSpaceshipShader();
-        initEnemy1Shader();
+        initShootShader();
 
         // init de tous les objets
         heightfield = new Heightfield();
         background = new Background(fbo.texture(0));
         spaceship = new Spaceship();
-        enemy1 = new Enemy1();
 
         // la couleur de fond sera noire
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
         // active le teste de profondeur
         gl.enable(gl.DEPTH_TEST);
-        //gl.blendFunc(gl.ONE, ql.ONE_MINUS_SRC_ALPHA);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); //Active la transparance
 
         /* Mouse and keyboard interaction functions */
         //canvas.addEventListener('mousedown', tbMouseDown, true);
         canvas.addEventListener('mousemove', mouseMove, true);
+        canvas.addEventListener('click', mouseCLick, true);
         //canvas.addEventListener('mouseup', tbMouseUp, true);
 
         document.onkeydown = handleKeyDown;
