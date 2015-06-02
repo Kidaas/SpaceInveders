@@ -17,6 +17,9 @@ function initShootShader() {
      // adresse de la variable uniforme uOffset dans le shader
     shootShader.positionUniform = gl.getUniformLocation(shootShader, "uPosition");
 
+    //  Texture du missile
+    spaceshipShader.textureShoot = gl.getUniformLocation(spaceshipShader, "uMaTextureShoot");
+
     console.log("shoot shader initialized");
 }
 
@@ -47,10 +50,10 @@ function Shoot() {
 	this.coordBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.coordBuffer);
 	var coords = [
-		 0.0, 1.0,
-		 0.0, 0.0,
-		 1.0, 1.0,
-		 0.0, 1.0
+                     0.0, 0.0,
+                     1.0, 0.0,
+                     1.0, 1.0,
+                     0.0, 1.0
 	];
 
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(coords), gl.STATIC_DRAW);
@@ -71,6 +74,8 @@ Shoot.prototype.initParameters = function() {
 	this.width = 0.2;
 	this.height = 0.2;
 	this.position = [0.0,-0.7];
+	// Initialise la texture du missile
+           this.maTextureShoot = initTexture("missile.png");
 }
 
 Shoot.prototype.setParameters = function(elapsed) {
@@ -95,6 +100,9 @@ Shoot.prototype.shader = function() {
 }
 
 Shoot.prototype.sendUniformVariables = function() {
+	gl.activeTexture(gl.TEXTURE0);
+           gl.bindTexture(gl.TEXTURE_2D,this.maTextureShoot);
+           gl.uniform1i(shootShader.textureShoot, 0);
 	gl.uniform2fv(shootShader.positionUniform,this.position);
 }
 

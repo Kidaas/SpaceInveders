@@ -13,11 +13,6 @@
 
 
 <script id="heightfield-vs" type="x-shader/x-vertex">
-// DANS draw scene
-// gl.enabled(gl.BLEND);
-// ...
-// gl.disable(..);
-//
     // *** le vertex shader ***
     attribute vec3 aVertexPosition; // la position du sommet
     attribute vec2 aVertexCoord; // sa coordonnee de texture
@@ -120,7 +115,6 @@ vec3 shade(in vec3 n,in float d) {
     // TODO : le shading !
     // la fonction prend en entrée la normale du terrain et sa profondeur
 
-
         // TODO: implementer Phong
         vec3 Kd = vec3(0.3515625, 0.2734375, 0.99609375); //couleur d'ambiance
         vec3 Ka = vec3(0.0, 0.0, 0.0);
@@ -128,7 +122,7 @@ vec3 shade(in vec3 n,in float d) {
         vec3 kt = texture2D(uHeightfield, vTextureCoord).xyz;
 
         vec3 li = vec3(0.8, 0.2, 0.8);
-        
+
         vec3 r = reflect(l,n);
 
         float q = 0.2;
@@ -137,7 +131,7 @@ vec3 shade(in vec3 n,in float d) {
         vec3 s = Ks * pow(max(dot(v,r), 0.0), q);
         //vec3 Tmp = vPosition.xyz;
         d = max(d, 0.000001);
-        
+
         //vec3 var1 = Kd * (dot(normal, l)) * Ka * pow(dot(v, r), 30.0) + (li);
         vec3 var1 = li*((Ka + diff + s)/d);
 
@@ -170,7 +164,9 @@ void main(void) { // carré rouge
 
 }
 </script>
-
+<!-- ===========================================================================================
+                SPACESHIP
+ ===========================================================================================  -->
 <script id="spaceship-vs" type="x-shader/x-vertex">
     // *** le vertex shader ***
     attribute vec3 aVertexPosition; // la position du sommet
@@ -197,7 +193,7 @@ uniform sampler2D uMaTexture; // la texture du vaisseau en entree
 void main(void) {
     // couleur par defaut du vaisseau... a changer
     //gl_FragColor = vec4(1.0,1.0,0.0,1.0);
-     // la couleur est attribuee au fragment courant
+    // la couleur est attribuee au fragment courant
     gl_FragColor = texture2D(uMaTexture,vTextureCoord);
 }
 </script>
@@ -232,7 +228,9 @@ void main(void) {
     gl_FragColor = texture2D(uMaTexture,vTextureCoord);
 }
 </script>
-
+<!-- ========================================================================================
+                SHOOT
+ =========================================================================================== -->
 <script id="shoot-vs" type="x-shader/x-vertex">
     // *** le vertex shader ***
     attribute vec3 aVertexPosition; // la position du sommet
@@ -254,11 +252,13 @@ void main(void) {
 precision highp float; // precision des nombres flottant
 
 varying vec2 vTextureCoord; // recuperation de la coord rasterisee
+uniform sampler2D uMaTextureShoot; // la texture du shoot en entree
 
 void main(void) {
     // couleur par defaut du vaisseau... a changer
-    gl_FragColor = vec4(0.0,0.0,1.0,1.0);
-
+    //gl_FragColor = vec4(1.0,1.0,0.0,1.0);
+    // la couleur est attribuee au fragment courant
+   gl_FragColor = texture2D(uMaTextureShoot,vTextureCoord);
 }
 </script>
 
@@ -302,14 +302,14 @@ void main(void) {
         spaceship.sendUniformVariables();
         spaceship.draw();
 
-        gl.disable(gl.BLEND);
-
         // dessin du shoot
         gl.useProgram(shootShader);
         for (var i = 0; i < shoot.length; i++) {
             shoot[i].sendUniformVariables();
             shoot[i].draw();
         };
+
+        gl.disable(gl.BLEND);
     }
 
     // une bonne manière de gerer les evenements claviers
@@ -341,7 +341,6 @@ void main(void) {
     }
 
     function mouseCLick(event) {
-        //alert("Bonjour");
         var shootTemporaire = new Shoot();
         shootTemporaire.setPosition(spaceship.getX(), spaceship.getY());
         shoot.push(shootTemporaire);
