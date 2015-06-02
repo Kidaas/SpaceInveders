@@ -291,6 +291,7 @@ void main(void) {
     function mouseCLick(event) {
         //alert("Bonjour");
         var shootTemporaire = new Shoot();
+        shootTemporaire.setPosition(spaceship.getX(), spaceship.getY());
         shoot.push(shootTemporaire);
 
         drawScene();
@@ -315,6 +316,10 @@ void main(void) {
         handleKeys();
         drawScene();
         animate();
+        for (var i = 0; i < shoot.length; i++) {
+            shoot[i].setPosition(shoot[i].getX(), shoot[i].getY()+0.075);
+        }
+
     }
 
 

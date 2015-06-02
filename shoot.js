@@ -75,10 +75,19 @@ Shoot.prototype.initParameters = function() {
 
 Shoot.prototype.setParameters = function(elapsed) {
 	// on pourrait animer des choses ici
+
 }
 
 Shoot.prototype.setPosition = function(x,y) {
 	this.position = [x,y];
+}
+
+Shoot.prototype.getX = function() {
+	return this.position[0];
+}
+
+Shoot.prototype.getY = function() {
+	return this.position[1];
 }
 
 Shoot.prototype.shader = function() {
