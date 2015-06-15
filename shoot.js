@@ -75,7 +75,7 @@ Shoot.prototype.initParameters = function() {
 	this.height = 0.2;
 	this.position = [0.0,-0.7];
 	// Initialise la texture du missile
-           this.maTextureShoot = initTexture("missile.png");
+           this.maTextureShoot = initTexture("./img/missile.png");
 }
 
 Shoot.prototype.setParameters = function(elapsed) {

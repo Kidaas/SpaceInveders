@@ -75,7 +75,7 @@ Spaceship.prototype.initParameters = function() {
 	this.height = 0.2;
 	this.position = [0.0,-0.7];
            // Initialise la texture du vaisseau
-           this.maTexture = initTexture("vaisseau.png");
+           this.maTexture = initTexture("./img/vaisseau.png");
 }
 
 Spaceship.prototype.setParameters = function(elapsed) {
