@@ -1,26 +1,29 @@
-var enemy1Shader;
+var enemyShader;
 
-function initEnemy1Shader() {
-	enemy1Shader = initShaders("enemy1-vs","enemy1-fs");
+function initEnemyShader() {
+	enemyShader = initShaders("enemy-vs","enemy-fs");
 
     // active ce shader
-    gl.useProgram(enemy1Shader);
+    gl.useProgram(enemyShader);
 
     // recupere la localisation de l'attribut dans lequel on souhaite acceder aux positions
-    enemy1Shader.vertexPositionAttribute = gl.getAttribLocation(enemy1Shader, "aVertexPosition");
-    gl.enableVertexAttribArray(enemy1Shader.vertexPositionAttribute); // active cet attribut
+    enemyShader.vertexPositionAttribute = gl.getAttribLocation(enemyShader, "aVertexPosition");
+    gl.enableVertexAttribArray(enemyShader.vertexPositionAttribute); // active cet attribut
 
     // pareil pour les coordonnees de texture
-    enemy1Shader.vertexCoordAttribute = gl.getAttribLocation(enemy1Shader, "aVertexCoord");
-    gl.enableVertexAttribArray(enemy1Shader.vertexCoordAttribute);
+    enemyShader.vertexCoordAttribute = gl.getAttribLocation(enemyShader, "aVertexCoord");
+    gl.enableVertexAttribArray(enemyShader.vertexCoordAttribute);
 
      // adresse de la variable uniforme uOffset dans le shader
-    enemy1Shader.positionUniform = gl.getUniformLocation(enemy1Shader, "uPosition");
+    enemyShader.positionUniform = gl.getUniformLocation(enemyShader, "uPosition");
 
-    console.log("enemy1 shader initialized");
+    //  Texture du vaisseau
+    enemyShader.textureVaisseau = gl.getUniformLocation(enemyShader, "uMaTexture");
+
+    console.log("enemy shader initialized");
 }
 
-function Enemy1() {
+function Enemy() {
 	this.initParameters();
 
 	// cree un nouveau buffer sur le GPU et l'active
@@ -28,8 +31,8 @@ function Enemy1() {
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
 
 	// un tableau contenant les positions des sommets (sur CPU donc)
-	var wo2 = 0.1*this.width;
-	var ho2 = 0.1*this.height;
+	var wo2 = 0.4*this.width;
+	var ho2 = 0.4*this.height;
 
 	var vertices = [
 		-wo2,-ho2, -0.5,
@@ -64,44 +67,56 @@ function Enemy1() {
 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(tri), gl.STATIC_DRAW);
     this.triangles.numItems = 6;
 
-    console.log("enemy1 initialized");
+    console.log("enemy initialized");
 }
 
-Enemy1.prototype.initParameters = function() {
+Enemy.prototype.initParameters = function() {
 	this.width = 0.2;
 	this.height = 0.2;
-	this.position = [0.0,-0.7];
-           //this.maTextureVaisseau
+	this.position = [-0.3,0.7];
+   	
+   	// Initialise la texture de l'enemy
+    this.maTexture = initTexture("./img/enemy.png");
 }
 
-Enemy1.prototype.setParameters = function(elapsed) {
+Enemy.prototype.setParameters = function(elapsed) {
 	// on pourrait animer des choses ici
 }
 
-Enemy1.prototype.setPosition = function(x,y) {
+Enemy.prototype.setPosition = function(x,y) {
 	this.position = [x,y];
 }
 
-Enemy1.prototype.shader = function() {
-	return enemy1Shader;
+Enemy.prototype.getX = function() {
+	return this.position[0];
 }
 
-Enemy1.prototype.sendUniformVariables = function() {
-	gl.uniform2fv(enemy1Shader.positionUniform,this.position);
+Enemy.prototype.getY = function() {
+	return this.position[1];
 }
 
-Enemy1.prototype.draw = function() {
+Enemy.prototype.shader = function() {
+	return enemyShader;
+}
+
+Enemy.prototype.sendUniformVariables = function() {
+           gl.activeTexture(gl.TEXTURE0);
+           gl.bindTexture(gl.TEXTURE_2D,this.maTexture);
+           gl.uniform1i(enemyShader.textureVaisseau, 0);
+	gl.uniform2fv(enemyShader.positionUniform,this.position);
+}
+
+Enemy.prototype.draw = function() {
 	// active le buffer de position et fait le lien avec l'attribut aVertexPosition dans le shader
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-	gl.vertexAttribPointer(enemy1Shader.vertexPositionAttribute, this.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+	gl.vertexAttribPointer(enemyShader.vertexPositionAttribute, this.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
 	// active le buffer de coords
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.coordBuffer);
-	gl.vertexAttribPointer(enemy1Shader.vertexCoordAttribute, this.coordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+	gl.vertexAttribPointer(enemyShader.vertexCoordAttribute, this.coordBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
 	// dessine les buffers actifs
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.triangles);
 	gl.drawElements(gl.TRIANGLES, this.triangles.numItems, gl.UNSIGNED_SHORT, 0);
+
 }
-
-
