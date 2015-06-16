@@ -357,14 +357,10 @@ void main(void) {
 
     function mouseCLick(event) {
         var shootTemporaire = new Shoot();
-        var enemyTemporaire = new Enemy();
 
         shootTemporaire.setPosition(spaceship.getX(), spaceship.getY());
 
-        enemyTemporaire.setPosition(0.0, 0.6);
-
         shoot.push(shootTemporaire);
-        enemy.push(enemyTemporaire);
 
         drawScene();
     }
@@ -397,6 +393,20 @@ void main(void) {
         }
     }
 
+    function displayEnemy() {
+        //requestAnimFrame(displayEnemy);
+        var interval = Math.random() * 3000;
+        
+        setInterval(function(){ 
+            var enemyTemporaire = new Enemy();
+            var abscisse = (Math.random() * 1.8) -0.9;
+            console.log(abscisse);
+            enemyTemporaire.setPosition(abscisse, 1.5);
+            enemy.push(enemyTemporaire);
+        }, interval);
+        
+    }
+
 
     function webGLStart() {
         // initialisation du canvas et des objets OpenGL
@@ -419,6 +429,17 @@ void main(void) {
         heightfield = new Heightfield();
         background = new Background(fbo.texture(0));
         spaceship = new Spaceship();
+
+        var enemyTemporaire = new Enemy();
+        enemyTemporaire.setPosition(0.0, 0.6);
+        enemy.push(enemyTemporaire);
+
+        displayEnemy();
+        /*setInterval(function(){ 
+            var enemyTemporaire = new Enemy();
+            enemyTemporaire.setPosition(0.0, 0.6);
+            enemy.push(enemyTemporaire);
+        }, 1000);*/
 
         // la couleur de fond sera noire
         gl.clearColor(0.0, 0.0, 0.0, 1.0);

@@ -173,3 +173,18 @@ window.requestAnimFrame = (function() {
          };
 })();
 
+/**
+ * Provides requestAnimationFrame in a cross browser way.
+ */
+window.requestAnimEnemy = (function() {
+  console.log("affichage enemy"); 
+  return window.requestAnimationFrame ||
+         window.webkitRequestAnimationFrame ||
+         window.mozRequestAnimationFrame ||
+         window.oRequestAnimationFrame ||
+         window.msRequestAnimationFrame ||
+         function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+           window.setTimeout(callback, 1000);
+           console.log("afficher enemy");
+         };
+})();
