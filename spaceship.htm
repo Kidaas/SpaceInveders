@@ -275,7 +275,7 @@ void main(void) {
     var heightfield; // l'objet heightfield, sa géométrie, son shader
     var background; // l'objet background, sa géométrie, son shader
     var spaceship; // l'objet spaceship, sa géométrie, son shader
-    var enemy; // l'objet enemy, sa géométrie, son shader
+    var enemy = new Array(); // l'objet enemy, sa géométrie, son shader
     var shoot = new Array(); //l'objet shoot dans un tableau, son shader
 
     function drawScene() {
@@ -311,9 +311,11 @@ void main(void) {
         spaceship.draw();
 
         // dessin de l'enemy
-        gl.useProgram(enemy.shader());
-        enemy.sendUniformVariables();
-        enemy.draw();
+        gl.useProgram(enemyShader);
+        for (var i = 0; i < enemy.length; i++) {
+            enemy[i].sendUniformVariables();
+            enemy[i].draw();
+        };
 
         // dessin du shoot
         gl.useProgram(shootShader);
@@ -355,8 +357,14 @@ void main(void) {
 
     function mouseCLick(event) {
         var shootTemporaire = new Shoot();
+        var enemyTemporaire = new Enemy();
+
         shootTemporaire.setPosition(spaceship.getX(), spaceship.getY());
+
+        enemyTemporaire.setPosition(0.0, 0.6);
+
         shoot.push(shootTemporaire);
+        enemy.push(enemyTemporaire);
 
         drawScene();
     }
@@ -370,7 +378,6 @@ void main(void) {
             var elapsed = timeNow - lastTime;
             heightfield.setParameters(elapsed);
             spaceship.setParameters(elapsed);
-            enemy.setParameters(elapsed);
             background.setParameters(elapsed);
         }
         lastTime = timeNow;
@@ -385,6 +392,9 @@ void main(void) {
             shoot[i].setPosition(shoot[i].getX(), shoot[i].getY()+0.075);
         }
 
+        for (var i = 0; i < enemy.length; i++) {
+            enemy[i].setPosition(enemy[i].getX(), enemy[i].getY()-0.0035);
+        }
     }
 
 
@@ -409,7 +419,6 @@ void main(void) {
         heightfield = new Heightfield();
         background = new Background(fbo.texture(0));
         spaceship = new Spaceship();
-        enemy = new Enemy();
 
         // la couleur de fond sera noire
         gl.clearColor(0.0, 0.0, 0.0, 1.0);

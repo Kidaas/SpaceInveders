@@ -18,7 +18,7 @@ function initEnemyShader() {
     enemyShader.positionUniform = gl.getUniformLocation(enemyShader, "uPosition");
 
     //  Texture du vaisseau
-    enemyShader.textureVaisseau = gl.getUniformLocation(enemyShader, "uMaTexture");
+    spaceshipShader.textureEnemy = gl.getUniformLocation(enemyShader, "uMaTextureEnemy");
 
     console.log("enemy shader initialized");
 }
@@ -76,7 +76,7 @@ Enemy.prototype.initParameters = function() {
 	this.position = [-0.3,0.7];
    	
    	// Initialise la texture de l'enemy
-    this.maTexture = initTexture("./img/enemy.png");
+    this.maTextureEnemy = initTexture("./img/enemy.png");
 }
 
 Enemy.prototype.setParameters = function(elapsed) {
@@ -100,9 +100,9 @@ Enemy.prototype.shader = function() {
 }
 
 Enemy.prototype.sendUniformVariables = function() {
-           gl.activeTexture(gl.TEXTURE0);
-           gl.bindTexture(gl.TEXTURE_2D,this.maTexture);
-           gl.uniform1i(enemyShader.textureVaisseau, 0);
+   	gl.activeTexture(gl.TEXTURE0);
+   	gl.bindTexture(gl.TEXTURE_2D,this.maTextureEnemy);
+   	gl.uniform1i(enemyShader.textureEnemy, 0);
 	gl.uniform2fv(enemyShader.positionUniform,this.position);
 }
 
