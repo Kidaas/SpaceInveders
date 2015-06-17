@@ -1,29 +1,29 @@
-var shootShader;
+var shootEnemyShader;
 
-function initShootShader() {
-	shootShader = initShaders("shoot-vs","shoot-fs");
+function initShootEnemyShader() {
+	shootEnemyShader = initShaders("shootEnemy-vs","shootEnemy-fs");
 
     // active ce shader
-    gl.useProgram(shootShader);
+    gl.useProgram(shootEnemyShader);
 
     // recupere la localisation de l'attribut dans lequel on souhaite acceder aux positions
-    shootShader.vertexPositionAttribute = gl.getAttribLocation(shootShader, "aVertexPosition");
-    gl.enableVertexAttribArray(shootShader.vertexPositionAttribute); // active cet attribut
+    shootEnemyShader.vertexPositionAttribute = gl.getAttribLocation(shootEnemyShader, "aVertexPosition");
+    gl.enableVertexAttribArray(shootEnemyShader.vertexPositionAttribute); // active cet attribut
 
     // pareil pour les coordonnees de texture
-    shootShader.vertexCoordAttribute = gl.getAttribLocation(shootShader, "aVertexCoord");
-    gl.enableVertexAttribArray(shootShader.vertexCoordAttribute);
+    shootEnemyShader.vertexCoordAttribute = gl.getAttribLocation(shootEnemyShader, "aVertexCoord");
+    gl.enableVertexAttribArray(shootEnemyShader.vertexCoordAttribute);
 
      // adresse de la variable uniforme uOffset dans le shader
-    shootShader.positionUniform = gl.getUniformLocation(shootShader, "uPosition");
+    shootEnemyShader.positionUniform = gl.getUniformLocation(shootEnemyShader, "uPosition");
 
     //  Texture du missile
-    spaceshipShader.textureShoot = gl.getUniformLocation(spaceshipShader, "uMaTextureShoot");
+    spaceshipShader.textureShootEnemy = gl.getUniformLocation(spaceshipShader, "uMaTextureShootEnemy");
 
-    console.log("shoot shader initialized");
+    console.log("shootEnemy shader initialized");
 }
 
-function Shoot() {
+function ShootEnemy() {
 	this.initParameters();
 
 	// cree un nouveau buffer sur le GPU et l'active
@@ -67,53 +67,53 @@ function Shoot() {
 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(tri), gl.STATIC_DRAW);
     this.triangles.numItems = 6;
 
-    console.log("shoot initialized");
+    console.log("shootEnemy initialized");
 }
 
-Shoot.prototype.initParameters = function() {
+ShootEnemy.prototype.initParameters = function() {
 	this.width = 0.2;
 	this.height = 0.2;
 	this.position = [0.0,-0.7];
 	// Initialise la texture du missile
-           this.maTextureShoot = initTexture("./img/missile.png");
+           this.maTextureShootEnemy = initTexture("./img/missile_enemy.png");
 }
 
-Shoot.prototype.setParameters = function(elapsed) {
+ShootEnemy.prototype.setParameters = function(elapsed) {
 	// on pourrait animer des choses ici
 
 }
 
-Shoot.prototype.setPosition = function(x,y) {
+ShootEnemy.prototype.setPosition = function(x,y) {
 	this.position = [x,y];
 }
 
-Shoot.prototype.getX = function() {
+ShootEnemy.prototype.getX = function() {
 	return this.position[0];
 }
 
-Shoot.prototype.getY = function() {
+ShootEnemy.prototype.getY = function() {
 	return this.position[1];
 }
 
-Shoot.prototype.shader = function() {
-	return shootShader;
+ShootEnemy.prototype.shader = function() {
+	return shootEnemyShader;
 }
 
-Shoot.prototype.sendUniformVariables = function() {
+ShootEnemy.prototype.sendUniformVariables = function() {
 	gl.activeTexture(gl.TEXTURE0);
-           gl.bindTexture(gl.TEXTURE_2D,this.maTextureShoot);
-           gl.uniform1i(shootShader.textureShoot, 0);
-	gl.uniform2fv(shootShader.positionUniform,this.position);
+           gl.bindTexture(gl.TEXTURE_2D,this.maTextureShootEnemy);
+           gl.uniform1i(shootEnemyShader.textureShootEnemy, 0);
+	gl.uniform2fv(shootEnemyShader.positionUniform,this.position);
 }
 
-Shoot.prototype.draw = function() {
+ShootEnemy.prototype.draw = function() {
 	// active le buffer de position et fait le lien avec l'attribut aVertexPosition dans le shader
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-	gl.vertexAttribPointer(shootShader.vertexPositionAttribute, this.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+	gl.vertexAttribPointer(shootEnemyShader.vertexPositionAttribute, this.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
 	// active le buffer de coords
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.coordBuffer);
-	gl.vertexAttribPointer(shootShader.vertexCoordAttribute, this.coordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+	gl.vertexAttribPointer(shootEnemyShader.vertexCoordAttribute, this.coordBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
 	// dessine les buffers actifs
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.triangles);

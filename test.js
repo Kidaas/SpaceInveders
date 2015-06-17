@@ -11,7 +11,6 @@
 <script type="text/javascript" src="spaceship.js"></script>
 <script type="text/javascript" src="enemy.js"></script>
 <script type="text/javascript" src="shoot.js"></script>
-<script type="text/javascript" src="shootEnemy.js"></script>
 
 
 <script id="heightfield-vs" type="x-shader/x-vertex">
@@ -270,40 +269,6 @@ void main(void) {
 }
 </script>
 
-<!-- ========================================================================================
-                SHOOTS ENEMY
- =========================================================================================== -->
-<script id="shootEnemy-vs" type="x-shader/x-vertex">
-    // *** le vertex shader ***
-    attribute vec3 aVertexPosition; // la position du sommet
-    attribute vec2 aVertexCoord; // sa coordonnee de texture
-
-    uniform vec2 uPosition; // position du vaisseau
-    varying vec2 vTextureCoord; // on souhaite rasteriser la coordonnee
-
-    void main(void) {
-        // projection de la position
-        gl_Position = vec4(aVertexPosition+vec3(uPosition,0.0), 1.0);
-
-        // stockage de la coordonnee de texture
-        vTextureCoord = aVertexCoord;
-    }
-</script>
-<script id="shootEnemy-fs" type="x-shader/x-fragment"> // met du rouge dans le carré
-// *** le fragment shader ***
-precision highp float; // precision des nombres flottant
-
-varying vec2 vTextureCoord; // recuperation de la coord rasterisee
-uniform sampler2D uMaTextureShootEnemy; // la texture du shoot en entree
-
-void main(void) {
-    // couleur par defaut du vaisseau... a changer
-    //gl_FragColor = vec4(1.0,1.0,0.0,1.0);
-    // la couleur est attribuee au fragment courant
-   gl_FragColor = texture2D(uMaTextureShootEnemy,vTextureCoord);
-}
-</script>
-
 <script type="text/javascript">
 
     var fbo; // le FBO utilisé pour rendre la texture de hauteur
@@ -312,7 +277,6 @@ void main(void) {
     var spaceship; // l'objet spaceship, sa géométrie, son shader
     var enemy = new Array(); // l'objet enemy, sa géométrie, son shader
     var shoot = new Array(); //l'objet shoot dans un tableau, son shader
-    var shootEnemy = new Array(); //l'objet shoot dans un tableau, son shader
 
     function drawScene() {
         // initialisation du viewport
@@ -358,13 +322,6 @@ void main(void) {
         for (var i = 0; i < shoot.length; i++) {
             shoot[i].sendUniformVariables();
             shoot[i].draw();
-        };
-
-        // dessin du shoot enemy
-        gl.useProgram(shootEnemyShader);
-        for (var i = 0; i < shootEnemy.length; i++) {
-            shootEnemy[i].sendUniformVariables();
-            shootEnemy[i].draw();
         };
 
         gl.disable(gl.BLEND);
@@ -434,13 +391,10 @@ void main(void) {
         for (var i = 0; i < enemy.length; i++) {
             enemy[i].setPosition(enemy[i].getX(), enemy[i].getY()-0.0035);
         }
-
-        for (var i = 0; i < shootEnemy.length; i++) {
-            shootEnemy[i].setPosition(shootEnemy[i].getX(), shootEnemy[i].getY()-0.0055);
-        }
     }
 
     function displayEnemy() {
+        //requestAnimFrame(displayEnemy);
         var interval = Math.random() * 3000;
         
         setInterval(function(){ 
@@ -449,17 +403,8 @@ void main(void) {
             console.log(abscisse);
             enemyTemporaire.setPosition(abscisse, 1.5);
             enemy.push(enemyTemporaire);
-        }, interval);        
-    }
-
-    function displayShootEnemy() {
-        var interval2 = Math.random() * 2000;
+        }, interval);
         
-        setInterval(function(){
-            var shootEnemyTemporaire = new ShootEnemy();
-            shootEnemyTemporaire.setPosition(0.5, 0.5);
-            shootEnemy.push(shootEnemyTemporaire);
-        }, interval2);        
     }
 
 
@@ -479,7 +424,6 @@ void main(void) {
         initSpaceshipShader();
         initEnemyShader();
         initShootShader();
-        initShootEnemyShader();
 
         // init de tous les objets
         heightfield = new Heightfield();
@@ -490,12 +434,12 @@ void main(void) {
         enemyTemporaire.setPosition(0.0, 0.6);
         enemy.push(enemyTemporaire);
 
-        var shootEnemyTemporaire = new ShootEnemy();
-        shootEnemyTemporaire.setPosition(0.0, 0.6);
-        shootEnemy.push(shootEnemyTemporaire);
-
         displayEnemy();
-        displayShootEnemy();
+        /*setInterval(function(){ 
+            var enemyTemporaire = new Enemy();
+            enemyTemporaire.setPosition(0.0, 0.6);
+            enemy.push(enemyTemporaire);
+        }, 1000);*/
 
         // la couleur de fond sera noire
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
