@@ -436,7 +436,7 @@ void main(void) {
         }
 
         for (var i = 0; i < shootEnemy.length; i++) {
-            shootEnemy[i].setPosition(shootEnemy[i].getX(), shootEnemy[i].getY()-0.0055);
+            shootEnemy[i].setPosition(shootEnemy[i].getX(), shootEnemy[i].getY()-0.0085);
         }
     }
 
@@ -447,19 +447,22 @@ void main(void) {
             var enemyTemporaire = new Enemy();
             var abscisse = (Math.random() * 1.8) -0.9;
             console.log(abscisse);
-            enemyTemporaire.setPosition(abscisse, 1.5);
+            enemyTemporaire.setPosition(abscisse, 1.3);
             enemy.push(enemyTemporaire);
         }, interval);        
     }
 
     function displayShootEnemy() {
         var interval2 = Math.random() * 2000;
-        
+
         setInterval(function(){
+            var num_enemy = parseInt((Math.random() * enemy.length) + 1);
+            console.log("nb enemy :" + num_enemy + " / " + enemy.length);
+
             var shootEnemyTemporaire = new ShootEnemy();
-            shootEnemyTemporaire.setPosition(0.5, 0.5);
+            shootEnemyTemporaire.setPosition(enemy[num_enemy].getX(), enemy[num_enemy].getY());
             shootEnemy.push(shootEnemyTemporaire);
-        }, interval2);        
+        }, interval2);
     }
 
 
