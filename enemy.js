@@ -1,4 +1,6 @@
 var enemyShader;
+var estVivant;
+var tempsMort;
 
 function initEnemyShader() {
 	enemyShader = initShaders("enemy-vs","enemy-fs");
@@ -25,6 +27,8 @@ function initEnemyShader() {
 
 function Enemy() {
 	this.initParameters();
+	estVivant = true;
+	tempsMort = 0;
 
 	// cree un nouveau buffer sur le GPU et l'active
 	this.vertexBuffer = gl.createBuffer();
@@ -81,10 +85,24 @@ Enemy.prototype.initParameters = function() {
 
 Enemy.prototype.changeImage = function(elapsed) {
 	this.maTextureEnemy = initTexture("./img/explosion.png");
+	estVivant = false;
+	tempsMort = new Date().getTime();
 }
 
 Enemy.prototype.setParameters = function(elapsed) {
-	// on pourrait animer des choses ici
+	if(elapsed > 1000 && tempsMort != 0) {
+		return true;
+	} else {
+		return false;
+	}	
+}
+
+Enemy.prototype.getTempsMort = function() {
+	return tempsMort;
+}
+
+Enemy.prototype.getEstVivant = function() {
+	return estVivant;
 }
 
 Enemy.prototype.setPosition = function(x,y) {
