@@ -434,11 +434,19 @@ void main(void) {
         for (var i = 0; i < enemy.length; i++) {
             enemy[i].setPosition(enemy[i].getX(), enemy[i].getY()-0.0035);
 
-            var distance = enemy[i].getY() - spaceship.getY();
-            var hauteur = 0.10625;
-            console.log("Distance : " + distance);
-            if ((distance > -hauteur) && (distance < hauteur)) {
-                alert("cacaaaaa !!!!!");
+            if (enemy[i].getY() < -1.1) {
+                enemy.splice(i, 1);
+            }
+
+            var distanceY = enemy[i].getY() - spaceship.getY();
+            var distanceX = enemy[i].getX() - spaceship.getX();
+            var hauteur = largeur = 0.10625;
+            console.log("DistanceY : " + distanceY);
+            if ((distanceY > -hauteur) && (distanceY < hauteur) && (distanceX > -largeur) && (distanceX < largeur)) {
+               spaceship.deleteVie();
+               enemy[i].changeImage();
+               //enemy.splice(i, 1);
+               //alert(spaceship.getVie());
             }
         }
 

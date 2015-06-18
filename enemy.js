@@ -79,6 +79,10 @@ Enemy.prototype.initParameters = function() {
     this.maTextureEnemy = initTexture("./img/enemy.png");
 }
 
+Enemy.prototype.changeImage = function(elapsed) {
+	this.maTextureEnemy = initTexture("./img/explosion.png");
+}
+
 Enemy.prototype.setParameters = function(elapsed) {
 	// on pourrait animer des choses ici
 }

@@ -1,4 +1,5 @@
 var spaceshipShader;
+var vie;
 
 function initSpaceshipShader() {
 	spaceshipShader = initShaders("spaceship-vs","spaceship-fs");
@@ -25,6 +26,9 @@ function initSpaceshipShader() {
 
 function Spaceship() {
 	this.initParameters();
+
+	// Innitialisation des points de vie
+	vie = 2;
 
 	// cree un nouveau buffer sur le GPU et l'active
 	this.vertexBuffer = gl.createBuffer();
@@ -68,6 +72,14 @@ function Spaceship() {
     this.triangles.numItems = 6;
 
     console.log("spaceship initialized");
+}
+
+Spaceship.prototype.deleteVie = function() {
+	vie--;
+}
+
+Spaceship.prototype.getVie = function() {
+	return vie;
 }
 
 Spaceship.prototype.initParameters = function() {
