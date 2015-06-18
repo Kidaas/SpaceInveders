@@ -471,7 +471,7 @@ void main(void) {
         setInterval(function(){
             var num_enemy = parseInt((Math.random() * enemy.length) -1);
 
-            while(enemy[num_enemy] === "undefined" && enemy[num_enemy].getEstVivant()) {
+            while(enemy[num_enemy] === "undefined" && !enemy[num_enemy].getEstVivant()) {
                 num_enemy = parseInt((Math.random() * enemy.length) - 1);
             }
 
