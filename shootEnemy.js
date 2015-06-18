@@ -20,7 +20,7 @@ function initShootEnemyShader() {
     //  Texture du missile
     spaceshipShader.textureShootEnemy = gl.getUniformLocation(spaceshipShader, "uMaTextureShootEnemy");
 
-    console.log("shootEnemy shader initialized");
+    //console.log("shootEnemy shader initialized");
 }
 
 function ShootEnemy() {
@@ -67,7 +67,7 @@ function ShootEnemy() {
 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(tri), gl.STATIC_DRAW);
     this.triangles.numItems = 6;
 
-    console.log("shootEnemy initialized");
+    //console.log("shootEnemy initialized");
 }
 
 ShootEnemy.prototype.initParameters = function() {

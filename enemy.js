@@ -22,7 +22,7 @@ function initEnemyShader() {
     //  Texture du vaisseau
     spaceshipShader.textureEnemy = gl.getUniformLocation(enemyShader, "uMaTextureEnemy");
 
-    console.log("enemy shader initialized");
+    //console.log("enemy shader initialized");
 }
 
 function Enemy() {
@@ -71,14 +71,14 @@ function Enemy() {
 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(tri), gl.STATIC_DRAW);
     this.triangles.numItems = 6;
 
-    console.log("enemy initialized");
+    //console.log("enemy initialized");
 }
 
 Enemy.prototype.initParameters = function() {
 	this.width = 0.2;
 	this.height = 0.2;
 	this.position = [-0.3,0.7];
-   	
+
    	// Initialise la texture de l'enemy
     this.maTextureEnemy = initTexture("./img/enemy.png");
 }
@@ -94,7 +94,7 @@ Enemy.prototype.setParameters = function(elapsed) {
 		return true;
 	} else {
 		return false;
-	}	
+	}
 }
 
 Enemy.prototype.getTempsMort = function() {
@@ -103,6 +103,10 @@ Enemy.prototype.getTempsMort = function() {
 
 Enemy.prototype.getEstVivant = function() {
 	return estVivant;
+}
+
+Enemy.prototype.setEstVivant = function(statut) {
+        estVivant = statut;
 }
 
 Enemy.prototype.setPosition = function(x,y) {

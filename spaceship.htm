@@ -13,6 +13,22 @@
 <script type="text/javascript" src="shoot.js"></script>
 <script type="text/javascript" src="shootEnemy.js"></script>
 
+<link rel="stylesheet" href="./css/bootstrap.min.css">
+
+<style type="text/css">
+  #score {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 5px;
+    border: 1px solid #d3d3d3;
+    background-color: white }
+
+    .scoreheight{
+        line-height: 50px;
+    }
+  </style>
 
 <script id="heightfield-vs" type="x-shader/x-vertex">
     // *** le vertex shader ***
@@ -314,6 +330,10 @@ void main(void) {
     var shoot = new Array(); //l'objet shoot dans un tableau, son shader
     var shootEnemy = new Array(); //l'objet shoot dans un tableau, son shader
 
+     // Score var
+    INIT_SCORE = 0;
+    score = INIT_SCORE;
+
     function drawScene() {
         // initialisation du viewport
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
@@ -418,30 +438,22 @@ void main(void) {
             heightfield.setParameters(elapsed);
             spaceship.setParameters(elapsed);
             background.setParameters(elapsed);
-						
-			for (var i = 0; i < enemy.length; i++) {
-			console.log(enemy[i].getEstVivant());
-				trueTempsMort = enemy[i].setParameters(timeNow - enemy[i].getTempsMort());
-				if(!enemy[i].getEstVivant() && trueTempsMort) {
-					enemy.splice(i, 1);
-				}
-			}
         }
         lastTime = timeNow;
     }
 
     function tick() {
         requestAnimFrame(tick);
-        handleKeys();	
+        handleKeys();
         drawScene();
-		
-		for (var i = 0; i < shoot.length; i++) {
+
+        for (var i = 0; i < shoot.length; i++) {
             shoot[i].setPosition(shoot[i].getX(), shoot[i].getY()+0.075);
         }
 
-        for (var i = 0; i < enemy.length; i++) {
+        for (var i  = 0; i < enemy.length; i++) {
             enemy[i].setPosition(enemy[i].getX(), enemy[i].getY()-0.0035);
-
+            // Supprime les énnemis hors écran
             if (enemy[i].getY() < -1.1) {
                 enemy.splice(i, 1);
             }
@@ -449,30 +461,47 @@ void main(void) {
             var distanceY = Math.abs(enemy[i].getY() - spaceship.getY());
             var distanceX = Math.abs(enemy[i].getX() - spaceship.getX());
             var hauteur = largeur = 0.10625;
+
             if ((distanceY < hauteur) && (distanceX < largeur)) {
                spaceship.deleteVie();
+               // Change l'image de l'ennemi par une explosion
                enemy[i].changeImage();
-               //enemy.splice(i, 1);
-               //alert(spaceship.getVie());
+               // L'ennemi à comme statut vivant à false (peut etre utilse pour la suite ?)
+               enemy[i].setEstVivant(false);
+
+               var indice  = i; // affectation à une variable car le "i" pas pris par splice (a cause du setTimeout j'pense)
+               // Fait le splice après le temps désiré
+               console.log(indice);
+               setTimeout(function() {enemy.splice(indice, 1);}, 1000);
+               increaseScore(); // Augmente le score
+
+               // Si on recrer un énnemie après suppression, enleve le problème de "undefined" car l'ennemi
+               //  à l'indice 0 est remplacé (ok, c'est une rustine) -> Mais a faire marcher, ça créer x ennemis
+            // var enemyTemporaire = new Enemy();
+            // var abscisse = (Math.random() * 1.8) -0.9;
+            // enemyTemporaire.setPosition(abscisse, 1.1);
+            // enemy.push(enemyTemporaire);
+
+                console.log("id ennemy tue: " + i);
             }
         }
 
         for (var i = 0; i < shootEnemy.length; i++) {
             shootEnemy[i].setPosition(shootEnemy[i].getX(), shootEnemy[i].getY()-0.0085);
         }
-		
-        animate();        
+
+        animate();
     }
 
     function displayEnemy() {
         var interval = 2000;
-        
-        setInterval(function(){ 
+
+        setInterval(function(){
             var enemyTemporaire = new Enemy();
             var abscisse = (Math.random() * 1.8) -0.9;
             enemyTemporaire.setPosition(abscisse, 1.1);
             enemy.push(enemyTemporaire);
-        }, interval);        
+        }, interval);
     }
 
     function displayShootEnemy() {
@@ -546,6 +575,18 @@ void main(void) {
         tick();
     }
 
+    function initScore(){
+        document.getElementById("score").innerHTML = INIT_SCORE;
+    }
+
+    function increaseScore(){
+        document.getElementById("score").innerHTML = ++score;
+    }
+
+    // Réinitialise le jeu avec le theme passé en paramètre
+    function resetGame () {
+        initScore();
+    }
 
 </script>
 
@@ -554,5 +595,20 @@ void main(void) {
 
 
 <body onload="webGLStart();">
+    <nav class="navbar navbar-default">
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <span class="navbar-brand" style="border-right: 1px solid #d3d3d3">Space Invaders</span>
+          <ul class="nav navbar-nav">
+                <li><a href="#" onclick="resetGame();return false;">Reset</a></li>
+                <li class="scoreheight">Score : <span id="score"> - </span></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Hugues Gobet</a></li>
+                <li><a href="#">Loic Pascal</a></li>
+                <li><a href="#">Arnaud Bellisime</a></li>
+                <li><a href="#">Kevin Sarrazin</a></li>
+           </ul>
+    </nav>
+
     <canvas id="SpaceShip" style="border: none;" width="800" height="800"></canvas>
 </body></html>
