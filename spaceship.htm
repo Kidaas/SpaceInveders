@@ -441,23 +441,21 @@ void main(void) {
     }
 
     function displayEnemy() {
-        var interval = Math.random() * 3000;
+        var interval = 2000;
         
         setInterval(function(){ 
             var enemyTemporaire = new Enemy();
             var abscisse = (Math.random() * 1.8) -0.9;
-            console.log(abscisse);
             enemyTemporaire.setPosition(abscisse, 1.3);
             enemy.push(enemyTemporaire);
         }, interval);        
     }
 
     function displayShootEnemy() {
-        var interval2 = Math.random() * 2000;
+        var interval2 = 1500;
 
         setInterval(function(){
             var num_enemy = parseInt((Math.random() * enemy.length) + 1);
-            console.log("nb enemy :" + num_enemy + " / " + enemy.length);
 
             var shootEnemyTemporaire = new ShootEnemy();
             shootEnemyTemporaire.setPosition(enemy[num_enemy].getX(), enemy[num_enemy].getY());
