@@ -441,7 +441,6 @@ void main(void) {
             var distanceY = enemy[i].getY() - spaceship.getY();
             var distanceX = enemy[i].getX() - spaceship.getX();
             var hauteur = largeur = 0.10625;
-            console.log("DistanceY : " + distanceY);
             if ((distanceY > -hauteur) && (distanceY < hauteur) && (distanceX > -largeur) && (distanceX < largeur)) {
                spaceship.deleteVie();
                enemy[i].changeImage();
@@ -470,7 +469,11 @@ void main(void) {
         var interval2 = 1500;
 
         setInterval(function(){
-            var num_enemy = parseInt((Math.random() * enemy.length) + 1);
+            var num_enemy = parseInt((Math.random() * enemy.length) -1);
+
+            while(enemy[num_enemy] === "undefined" && enemy[num_enemy].getEstVivant()) {
+                num_enemy = parseInt((Math.random() * enemy.length) - 1);
+            }
 
             var shootEnemyTemporaire = new ShootEnemy();
             shootEnemyTemporaire.setPosition(enemy[num_enemy].getX(), enemy[num_enemy].getY());
@@ -510,7 +513,7 @@ void main(void) {
         shootEnemyTemporaire.setPosition(0.0, 0.6);
         shootEnemy.push(shootEnemyTemporaire);
 
-        //displayEnemy();
+        displayEnemy();
         displayShootEnemy();
 
         // la couleur de fond sera noire
