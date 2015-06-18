@@ -17,6 +17,7 @@
 
 <style type="text/css">
   #score {
+    margin-right: 10px;
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 5px;
@@ -28,6 +29,7 @@
     .scoreheight{
         line-height: 50px;
     }
+
   </style>
 
 <script id="heightfield-vs" type="x-shader/x-vertex">
@@ -245,8 +247,6 @@ varying vec2 vTextureCoord; // recuperation de la coord rasterisee
 uniform sampler2D uMaTexture; // la texture du vaisseau en entree
 
 void main(void) {
-    // couleur par defaut du vaisseau... a changer
-    //gl_FragColor = vec4(1.0,1.0,0.0,1.0);
      // la couleur est attribuee au fragment courant
     gl_FragColor = texture2D(uMaTexture,vTextureCoord);
 }
@@ -313,8 +313,6 @@ varying vec2 vTextureCoord; // recuperation de la coord rasterisee
 uniform sampler2D uMaTextureShootEnemy; // la texture du shoot en entree
 
 void main(void) {
-    // couleur par defaut du vaisseau... a changer
-    //gl_FragColor = vec4(1.0,1.0,0.0,1.0);
     // la couleur est attribuee au fragment courant
    gl_FragColor = texture2D(uMaTextureShootEnemy,vTextureCoord);
 }
@@ -451,11 +449,12 @@ void main(void) {
         handleKeys();
         drawScene();
 
-        for (var i = 0; i < shoot.length; i++) {
-            shoot[i].setPosition(shoot[i].getX(), shoot[i].getY()+0.075);
-        }
+            for (var i = 0; i < shoot.length; i++) {
+                shoot[i].setPosition(shoot[i].getX(), shoot[i].getY()+0.075);
+            }
 
         for (var i  = 0; i < enemy.length; i++) {
+
             enemy[i].setPosition(enemy[i].getX(), enemy[i].getY()-0.0035);
             // Supprime les énnemis hors écran
             if (enemy[i].getY() < -1.1) {
@@ -466,8 +465,13 @@ void main(void) {
             var distanceX = Math.abs(enemy[i].getX() - spaceship.getX());
             var hauteur = largeur = 0.10625;
 
+            /*
+            A cause du tick, l'action se déorule trop vite, le vaiseaux n'a pas le temps d'etre détecté en collision ET supprimé, qu'il est déjà détecté comme en colision
+             */
+
             if ((distanceY < hauteur) && (distanceX < largeur)) {
-                decreaseVie();
+                console.log("deux");
+                //decreaseVie();
 
                // Change l'image de l'ennemi par une explosion
                enemy[i].changeImage();
@@ -476,8 +480,9 @@ void main(void) {
 
                var indice  = i; // affectation à une variable car le "i" pas pris par splice (a cause du setTimeout j'pense)
                // Fait le splice après le temps désiré
-               console.log(indice);
-               setTimeout(function() {enemy.splice(indice, 1);}, 1000);
+               //console.log(indice);
+               setTimeout(function() {enemy.splice(indice, 1);}, 500);
+
                increaseScore(); // Augmente le score
 
                // Si on recrer un énnemie après suppression, enleve le problème de "undefined" car l'ennemi
@@ -487,7 +492,7 @@ void main(void) {
             // enemyTemporaire.setPosition(abscisse, 1.1);
             // enemy.push(enemyTemporaire);
 
-                console.log("id ennemy tue: " + i);
+            //console.log("id ennemy tue: " + i);
             }
         }
 
@@ -606,6 +611,7 @@ void main(void) {
     function resetGame () {
         initScore();
     }
+
 
 </script>
 
