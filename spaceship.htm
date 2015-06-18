@@ -433,6 +433,13 @@ void main(void) {
 
         for (var i = 0; i < enemy.length; i++) {
             enemy[i].setPosition(enemy[i].getX(), enemy[i].getY()-0.0035);
+
+            var distance = enemy[i].getY() - spaceship.getY();
+            var hauteur = 0.10625;
+            console.log("Distance : " + distance);
+            if ((distance > -hauteur) && (distance < hauteur)) {
+                alert("cacaaaaa !!!!!");
+            }
         }
 
         for (var i = 0; i < shootEnemy.length; i++) {
@@ -446,7 +453,7 @@ void main(void) {
         setInterval(function(){ 
             var enemyTemporaire = new Enemy();
             var abscisse = (Math.random() * 1.8) -0.9;
-            enemyTemporaire.setPosition(abscisse, 1.3);
+            enemyTemporaire.setPosition(abscisse, 1.1);
             enemy.push(enemyTemporaire);
         }, interval);        
     }
@@ -495,7 +502,7 @@ void main(void) {
         shootEnemyTemporaire.setPosition(0.0, 0.6);
         shootEnemy.push(shootEnemyTemporaire);
 
-        displayEnemy();
+        //displayEnemy();
         displayShootEnemy();
 
         // la couleur de fond sera noire
