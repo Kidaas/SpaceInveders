@@ -446,10 +446,10 @@ void main(void) {
                 enemy.splice(i, 1);
             }
 
-            var distanceY = enemy[i].getY() - spaceship.getY();
-            var distanceX = enemy[i].getX() - spaceship.getX();
+            var distanceY = Math.abs(enemy[i].getY() - spaceship.getY());
+            var distanceX = Math.abs(enemy[i].getX() - spaceship.getX());
             var hauteur = largeur = 0.10625;
-            if ((distanceY > -hauteur) && (distanceY < hauteur) && (distanceX > -largeur) && (distanceX < largeur)) {
+            if ((distanceY < hauteur) && (distanceX < largeur)) {
                spaceship.deleteVie();
                enemy[i].changeImage();
                //enemy.splice(i, 1);
