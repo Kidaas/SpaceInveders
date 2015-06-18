@@ -334,6 +334,10 @@ void main(void) {
     INIT_SCORE = 0;
     score = INIT_SCORE;
 
+    // Vies
+    INIT_VIE = 3;
+    vie = INIT_VIE;
+
     function drawScene() {
         // initialisation du viewport
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
@@ -463,7 +467,8 @@ void main(void) {
             var hauteur = largeur = 0.10625;
 
             if ((distanceY < hauteur) && (distanceX < largeur)) {
-               spaceship.deleteVie();
+                decreaseVie();
+
                // Change l'image de l'ennemi par une explosion
                enemy[i].changeImage();
                // L'ennemi à comme statut vivant à false (peut etre utilse pour la suite ?)
@@ -583,6 +588,20 @@ void main(void) {
         document.getElementById("score").innerHTML = ++score;
     }
 
+    function initVie (){
+        document.getElementById("vie").innerHTML = INIT_VIE;
+    }
+
+    function decreaseVie (){
+        if (1<vie)
+            document.getElementById("vie").innerHTML = --vie;
+        else
+        {
+            alert('Game over');
+            setTimeout(function() {window.location.reload();}, 1000);
+        }
+    }
+
     // Réinitialise le jeu avec le theme passé en paramètre
     function resetGame () {
         initScore();
@@ -601,6 +620,7 @@ void main(void) {
           <ul class="nav navbar-nav">
                 <li><a href="#" onclick="resetGame();return false;">Reset</a></li>
                 <li class="scoreheight">Score : <span id="score"> - </span></li>
+                 <li class="scoreheight">Vies : <span id="vie"> - </span></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
                 <li><a href="#">Hugues Gobet</a></li>
