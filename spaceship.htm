@@ -469,8 +469,7 @@ void main(void) {
             A cause du tick, l'action se déorule trop vite, le vaiseaux n'a pas le temps d'etre détecté en collision ET supprimé, qu'il est déjà détecté comme en colision
              */
 
-            if ((distanceY < hauteur) && (distanceX < largeur)) {
-                console.log("deux");
+            if ((distanceY < hauteur) && (distanceX < largeur) && enemy[i].getEstVivant()) {
                 decreaseVie();
 
                // Change l'image de l'ennemi par une explosion
@@ -598,7 +597,7 @@ void main(void) {
     }
 
     function decreaseVie (){
-        if (1<vie)
+        if (1 <= vie)
             document.getElementById("vie").innerHTML = --vie;
         else
         {
